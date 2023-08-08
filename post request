@@ -1,0 +1,35 @@
+package main
+
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
+func main() {
+	apiURL := "https://api.example.com/post_endpoint"
+
+	data := map[string]interface{}{
+		"key1": "value1",
+		"key2": "value2",
+	}
+
+	jsonData, err := json.Marshal(data)
+	if err != nil {
+		fmt.Println("Error JSON:", err)
+		return
+	}
+
+	resp, err := http.Post(apiURL, "application/json", bytes.NewBuffer(jsonData))
+	if err != nil {
+		fmt.Println("Error POST:", err)
+		return
+	}
+	defer resp.Body.Close()
+
+	fmt.Println("Respuesta de la API:")
+	buffer := new(bytes.Buffer)
+	_, _ = buffer.ReadFrom(resp.Body)
+	fmt.Println(buffer.String())
+}
